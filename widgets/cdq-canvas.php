@@ -243,6 +243,11 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 
         ?>
         <style>
+
+                .elementor-element-<?php echo $idint; ?>.elementor-invisible{
+                    visibility: visible;
+                }
+
                 #<?php echo $id; ?> .draw-canvas, #<?php echo $id; ?> .overlay_canvas {
 					touch-action: none;
 					background-repeat: no-repeat;
