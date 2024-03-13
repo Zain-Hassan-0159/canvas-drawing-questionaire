@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       Canvas Drawing Questionaire
  * Description:       Canvas Drawing Questionaire Widget is created by Zain Hassan.
- * Version:           1.0.5
+ * Version:           1.0.6
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Zain Hassan
@@ -41,11 +41,21 @@ add_action( 'elementor/widgets/register', 'register_cdq_widget' );
 
 
 
-// function cdq_register_dependencies_scripts() {
+function cdq_register_dependencies_scripts() {
 
-// 	/* Scripts */
-// 	wp_register_script( 'cdq-canvas', plugins_url( 'inc/assets/js/cdq-canvas.js', __FILE__ ));
+	/* Scripts */
+	wp_register_script( 'cdq-canvas', plugins_url( 'inc/assets/js/cdq-canvas.js', __FILE__ ));
+}
+add_action( 'wp_enqueue_scripts', 'cdq_register_dependencies_scripts' );
 
-// }
-// add_action( 'wp_enqueue_scripts', 'cdq_register_dependencies_scripts' );
+
+function add_custom_js_to_footer() {
+    ?>
+    <script type="text/javascript">
+        // Initialize the initializationFunctions array
+        window.initializationFunctions = [];
+    </script>
+    <?php
+}
+add_action('wp_head', 'add_custom_js_to_footer');
 

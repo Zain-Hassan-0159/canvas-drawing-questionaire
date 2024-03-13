@@ -87,9 +87,9 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 		return [ 'cdq', 'canvas', 'canvas drawing', 'custom', 'questionaire' ];
 	}
 
-    // public function get_script_depends() {
-	// 	return [ 'cdq-card' ];
-	// }
+    public function get_script_depends() {
+		return [ 'cdq-canvas' ];
+	}
 
 
 	/**
@@ -130,19 +130,13 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 				'fields' => $repeater->get_controls(),
 				'default' => [
 					[
-						'list_title' => esc_html__( 'Title #1', 'hz-widgets' ),
+						'list_title' => esc_html__( 'Write your first name using your finger.', 'hz-widgets' ),
 					],
 					[
-						'list_title' => esc_html__( 'Title #2', 'hz-widgets' ),
+						'list_title' => esc_html__( 'Write your date of birth using your finger.', 'hz-widgets' ),
 					],
                     [
-						'list_title' => esc_html__( 'Title #3', 'hz-widgets' ),
-					],
-                    [
-						'list_title' => esc_html__( 'Title #4', 'hz-widgets' ),
-					],
-                    [
-						'list_title' => esc_html__( 'Title #5', 'hz-widgets' ),
+						'list_title' => esc_html__( 'Sign your signature using your finger.', 'hz-widgets' ),
 					],
 				],
 				'title_field' => '{{{ list_title }}}',
@@ -150,6 +144,78 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 		);
 
         $this->end_controls_section();
+
+        $this->start_controls_section(
+			'style_section',
+			[
+				'label' => esc_html__( 'Style', 'hz-widgets' ),
+				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+			]
+		);
+
+        $this->add_control(
+			'width',
+			[
+				'label' => esc_html__( 'Width', 'hz-widgets' ),
+				'type' => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1000,
+						'step' => 5,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 390,
+				]
+			]
+		);
+
+        $this->add_control(
+			'height',
+			[
+				'label' => esc_html__( 'Height', 'hz-widgets' ),
+				'type' => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 1000,
+						'step' => 5,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 490,
+				]
+			]
+		);
+
+        $this->add_control(
+			'pad',
+			[
+				'label' => esc_html__( 'Canvas Image', 'hz-widgets' ),
+				'type' => \Elementor\Controls_Manager::MEDIA,
+				'default' => [
+					'url' => CDQ_PLUGIN_ASSETS_FILE . 'images/pad.webp',
+				],
+			]
+		);
+
+        $this->add_control(
+			'animation',
+			[
+				'label' => esc_html__( 'Canvas Image', 'hz-widgets' ),
+				'type' => \Elementor\Controls_Manager::MEDIA,
+				'default' => [
+					'url' => CDQ_PLUGIN_ASSETS_FILE . 'images/Animation_1-min_V1-min-ezgif.com-gif-to-webp-converter.webp',
+				],
+			]
+		);
+
+		$this->end_controls_section();
 	}
 
 
@@ -164,6 +230,8 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
+        $idint = $this->get_id();
+        $id = 'canvas-' . $idint;
 
         $list = [];
         if ( $settings['list'] ) {
@@ -175,169 +243,90 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 
         ?>
         <style>
-                #canvas {
-                    border: 4px solid black;
-                    touch-action: none;
-                    border-radius: 12px;
+                #<?php echo $id; ?> .draw-canvas, #<?php echo $id; ?> .overlay_canvas {
+					touch-action: none;
+					background-repeat: no-repeat;
+					background-size: contain;
                 }
 
-                .cdq_container .buttons {
-                    position: absolute;
-                    bottom: 12px;
-                    display: flex;
-                    justify-content: space-between;
-                    width: 100%;
-                    align-items: center;
-                    left: 0;
-                    right: 0;
+                #<?php echo $id; ?> .buttons {
+					position: absolute;
+					bottom: 40px;
+					padding: 0 30px;
+					display: flex;
+					justify-content: space-between;
+					width: 100%;
+					align-items: center;
+					left: 0px;
+					right: 0;
                 }
 
-                .cdq_container .canvas {
+                #<?php echo $id; ?> .canvas {
                     position: relative;
-                    max-width: 352px;
+                    width: fit-content;                
                 }
+			
+				#<?php echo $id; ?> .canvas p{
+					text-align: center;
+					font-size: 17px;
+					line-height: 1.1em;
+					color: #6E1414;
+					font-family: "Abhaya Libre", Sans-serif;
+					font-weight: bold;
+					position: absolute;
+					top: 35px;
+					left: 0;
+					right: 0;
+					padding: 0 20px;
+				}
 
-                .cdq_container button {
-                    display: block;
-                    background: transparent;
-                    color: black;
-                    font-weight: bold;
-                    border: none;
-                    font-size: 25px;
-                    border: none;
-                    outline: none;
+                #<?php echo $id; ?> button {
+					display: block;
+					background: #174257;
+					color: white;
+					font-weight: normal;
+					border: none;
+					font-size: 20px;
+					border: none;
+					font-family: "Abhaya Libre", Sans-serif;
+					padding: 2px 12px;
                 }
+			
+			.op-0{
+				opacity: 0;
+			}
+
+            .questions{
+                position: relative;
+            }
 
         </style>
 
-        <div class="cdq_container">
+		<div class="cdq_container" id="<?php echo $id; ?>" >
             <div class="questions">
-                <h2><?php echo $list[0]; ?></h2>
-                <div class="canvas">
-                    <canvas id="canvas" width="350" height="450"></canvas>
+                <div class="canvas op-0">
+					<p><?php echo $list[0]; ?></p>
+                    <canvas class="draw-canvas" style="background-image: url(<?php echo $settings['pad']['url']; ?>);"  width="<?php echo $settings['width']['size'] ?>" height="<?php echo $settings['height']['size'] ?>"></canvas>
                     <div class="buttons">
-                        <button class="reset">Reset</button>
-                        <button id="saveBtn" class="next">Next</button>
+                        <button class="reset">ERASE</button>
+                        <button class="next saveBtn">NEXT</button>
                     </div>
                 </div>
-            </div>
-            <div class="results">
-
+				<div class="overlay_canvas" style="background-image: url(<?php echo $settings['pad']['url']; ?>);width: <?php echo $settings['width']['size'] ?>px; height: <?php echo $settings['height']['size'] ?>px; position: absolute; top: 0;">
+					<img src="<?php echo $settings['animation']['url']; ?>" />
+					<button class="tap_to_start" style="margin:auto;" >
+						TAP TO START
+					</button>
+				</div>
             </div>
         </div>
 
         <?php  //   if ( \Elementor\Plugin::$instance->editor->is_edit_mode()) : ?>
-            <script>
-                const canvas = document.getElementById('canvas');
-                const ctx = canvas.getContext('2d');
-
-                    let isDrawing = false;
-                    let lastX = 0;
-                    let lastY = 0;
-
-                    // Function to start drawing
-                    function startDrawing(e) {
-                        isDrawing = true;
-                        [lastX, lastY] = [e.offsetX, e.offsetY];
-                    }
-
-                    // Function to draw when mouse is moved
-                    function draw(e) {
-                        if (!isDrawing) return;
-                        ctx.beginPath();
-                        ctx.moveTo(lastX, lastY);
-                        ctx.lineTo(e.offsetX, e.offsetY);
-                        ctx.strokeStyle = 'black';
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                        [lastX, lastY] = [e.offsetX, e.offsetY];
-                    }
-
-                    // Function to stop drawing
-                    function stopDrawing() {
-                        isDrawing = false;
-                    }
-
-                    // Function to start drawing with touch
-                    function startDrawingTouch(e) {
-                        e.preventDefault(); // Prevent scrolling on touch devices
-                        isDrawing = true;
-                        const rect = canvas.getBoundingClientRect(); // Get canvas bounding rectangle
-                        const touch = e.touches[0];
-                        [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
-                    }
-
-                    // Function to draw with touch
-                    function drawTouch(e) {
-                        if (!isDrawing) return;
-                        const rect = canvas.getBoundingClientRect(); // Get canvas bounding rectangle
-                        const touch = e.touches[0];
-                        const x = touch.clientX - rect.left;
-                        const y = touch.clientY - rect.top;
-                        ctx.beginPath();
-                        ctx.moveTo(lastX, lastY);
-                        ctx.lineTo(x, y);
-                        ctx.strokeStyle = 'black';
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                        lastX = x;
-                        lastY = y;
-                    }
-
-                    // Function to reset the canvas
-                    function resetCanvas() {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-                    }
-
-                    // Event listeners for mouse
-                    canvas.addEventListener('mousedown', startDrawing);
-                    canvas.addEventListener('mousemove', draw);
-                    canvas.addEventListener('mouseup', stopDrawing);
-                    canvas.addEventListener('mouseout', stopDrawing);
-
-                    canvas.addEventListener('touchstart', startDrawingTouch);
-                    canvas.addEventListener('touchmove', drawTouch);
-                    canvas.addEventListener('touchend', stopDrawing);
-                    canvas.addEventListener('touchcancel', stopDrawing);
-
-                    const questions = <?php echo json_encode($list); ?>;
-
-                    const results = [];
-                    let indx = 0;
-
-                // Function to save drawing
-                document.getElementById('saveBtn').addEventListener('click', function() {
-                    const image = canvas.toDataURL(); // Get image data URL
-
-                    const next = {question: questions[indx], url: image};
-                    results.push(next);
-                    indx++;
-                    if(indx === questions.length){
-                        let items = '';
-                        results.forEach(element => {
-                            const img = document.createElement('img'); // Create a link element
-                            img.src = element.url; // Set href attribute to image data URL
-                            const heading = document.createElement('h2'); // Create a link element
-                            heading.innerHTML = element.question;
-                            const item = document.createElement('div'); // Create a link element
-                            item.classList.add("item");
-                            item.appendChild(heading)
-                            item.appendChild(img)
-                            document.querySelector(".results").appendChild(item)
-                        });
-                        document.querySelector(".questions").style.display = "none";
-                    }else{
-                        document.querySelector(".cdq_container h2").innerHTML = questions[indx];
-                        resetCanvas();
-                    }
-                });
-
-
-
-                // Event listener for the reset button
-                document.querySelector('.reset').addEventListener('click', resetCanvas);
-
-            </script>
+		<script>
+            window.initializationFunctions.push(() => {
+                const instance<?php echo $idint; ?> = new CanvasInitializer(<?php echo json_encode($list); ?>, <?php echo json_encode($id); ?>);
+            });
+        </script>
         <?php // endif; ?>
 		<?php
 	}
