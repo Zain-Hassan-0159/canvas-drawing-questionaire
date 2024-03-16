@@ -353,14 +353,8 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 					<?php if($settings['add_gif'] === 'yes') : ?>
 					<img style="height: 50%;" src="<?php echo $settings['animation']['url']; ?>" />
 					<?php else : ?>
-					<lottie-player
-						autoplay
-						loop
-						mode="normal"
-						src="<?php echo $settings['lottie']['url']; ?>"
-						style="height: 50%;"
-						>
-					</lottie-player>
+						<tgs-player style="height: 50%;width: 100%;" autoplay loop mode="normal" src="<?php echo $settings['lottie']['url']; ?>">
+						</tgs-player>
 					<?php endif; ?>
 					<button class="tap_to_start" style="margin:auto;" >
 						TAP TO START
