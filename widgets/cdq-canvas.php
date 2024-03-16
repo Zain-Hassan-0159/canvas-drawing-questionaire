@@ -204,16 +204,48 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'add_gif',
+			[
+				'label' => esc_html__( 'Add Gif', 'hz-widgets' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Gif', 'hz-widgets' ),
+				'label_off' => esc_html__( 'Lottie', 'hz-widgets' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+
         $this->add_control(
 			'animation',
 			[
-				'label' => esc_html__( 'Canvas Image', 'hz-widgets' ),
+				'label' => esc_html__( 'Animation Image', 'hz-widgets' ),
 				'type' => \Elementor\Controls_Manager::MEDIA,
 				'default' => [
 					'url' => CDQ_PLUGIN_ASSETS_FILE . 'images/Animation_1-min_V1-min-ezgif.com-gif-to-webp-converter.webp',
 				],
+				'condition' => [
+					'add_gif' => 'yes',
+				],
 			]
 		);
+
+		$this->add_control(
+			'lottie',
+			[
+				'label' => esc_html__( 'Lottie Json', 'hz-widgets' ),
+				'type' => \Elementor\Controls_Manager::MEDIA,
+				'media_types' => ['application/json'],
+				'default' => [
+					'url' => CDQ_PLUGIN_ASSETS_FILE . 'images/Version-1.json',
+				],
+				'condition' => [
+					'add_gif!' => 'yes',
+				],
+			]
+		);
+
 
 		$this->end_controls_section();
 	}
@@ -317,8 +349,19 @@ class Elementor_CdQ_Widget extends \Elementor\Widget_Base {
                         <button class="next saveBtn">NEXT</button>
                     </div>
                 </div>
-				<div class="overlay_canvas" style="background-image: url(<?php echo $settings['pad']['url']; ?>);width: <?php echo $settings['width']['size'] ?>px; height: <?php echo $settings['height']['size'] ?>px; position: absolute; top: 0;">
-					<img src="<?php echo $settings['animation']['url']; ?>" />
+				<div class="overlay_canvas" style="text-align: center; background-image: url(<?php echo $settings['pad']['url']; ?>);width: <?php echo $settings['width']['size'] ?>px; height: <?php echo $settings['height']['size'] ?>px; position: absolute; top: 0;">
+					<?php if($settings['add_gif'] === 'yes') : ?>
+					<img style="height: 50%;" src="<?php echo $settings['animation']['url']; ?>" />
+					<?php else : ?>
+					<lottie-player
+						autoplay
+						loop
+						mode="normal"
+						src="<?php echo $settings['lottie']['url']; ?>"
+						style="height: 50%;"
+						>
+					</lottie-player>
+					<?php endif; ?>
 					<button class="tap_to_start" style="margin:auto;" >
 						TAP TO START
 					</button>
